@@ -165,7 +165,7 @@ process(Packet = ?CONNECT_PACKET(Var), State0) ->
             {ReturnCode, false, State1}
     end,
     %% Run hooks
-    ?LOG(error, "Will msg '~s' for user ~p", [ClientId, State1#proto_state.will_msg], State1),
+    ?LOG(info, "Will msg '~s' for user ~p", [ClientId, State1#proto_state.will_msg], State1),
     send_willmsg_online(ClientId, State1#proto_state.will_msg),
     emqttd_broker:foreach_hooks('client.connected', [ReturnCode1, client(State3)]),
     %% Send connack
@@ -283,7 +283,7 @@ shutdown(conflict, #proto_state{client_id = _ClientId}) ->
 shutdown(Error, State = #proto_state{client_id = ClientId, will_msg = WillMsg}) ->
     ?LOG(info, "Shutdown for ~p", [Error], State),
     send_willmsg(ClientId, WillMsg),
-    ?LOG(error, "Will msg shutdown '~s' for user ~p", [ClientId, WillMsg], State),
+    ?LOG(info, "Will msg shutdown '~s' for user ~p", [ClientId, WillMsg], State),
     emqttd_broker:foreach_hooks('client.disconnected', [Error, ClientId]),
     %% let it down
     %% emqttd_cm:unregister(ClientId).
