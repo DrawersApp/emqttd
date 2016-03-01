@@ -9,7 +9,10 @@
                   stdlib,
                   gproc,
                   esockd,
-                  mochiweb]},
+                  mochiweb,
+                  inets,
+                  ssl,
+                  jsx]},
   {mod, {emqttd_app, []}},
   {env, []}
  ]}.

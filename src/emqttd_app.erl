@@ -69,7 +69,8 @@ start_servers(Sup) ->
                {"emqttd mod supervisor", emqttd_mod_sup},
                {"emqttd bridge supervisor", {supervisor, emqttd_bridge_sup}},
                {"emqttd access control", emqttd_access_control},
-               {"emqttd system monitor", {supervisor, emqttd_sysmon_sup}}],
+               {"emqttd system monitor", {supervisor, emqttd_sysmon_sup}},
+               {"emqttd gcm supervisor", {supervisor, gcm_sup}}],
     [start_server(Sup, Server) || Server <- Servers].
 
 start_server(_Sup, {Name, F}) when is_function(F) ->
@@ -97,7 +98,8 @@ start_child(Sup, {supervisor, Module}, Opts) ->
     supervisor:start_child(Sup, supervisor_spec(Module, Opts));
 
 start_child(Sup, Module, Opts) when is_atom(Module) ->
-    supervisor:start_child(Sup, worker_spec(Module, Opts)).
+  supervisor:start_child(Sup, worker_spec(Module, Opts)).
+
 
 supervisor_spec(Module) when is_atom(Module) ->
     supervisor_spec(Module, start_link, []).

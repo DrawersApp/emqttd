@@ -283,6 +283,8 @@ shutdown(conflict, #proto_state{client_id = _ClientId}) ->
 shutdown(Error, State = #proto_state{client_id = ClientId, will_msg = WillMsg}) ->
     ?LOG(info, "Shutdown for ~p", [Error], State),
     send_willmsg(ClientId, WillMsg),
+    gcm:push(drawers, [<<"dl5DcY_6Zgc:APA91bHBUi4sV_gKcvXmOwPJZcKZ1yXyGlpVBC3F2Xh_mAC3jU12rs3B0xpDzIilhXtPPBFVpvHUzNrCIeA70tGLOMi_v8z8I_7QLhn9Hl9j5dMkpVk6jjmHTOcAqhPoAhdsY57EI6lF">>],
+    [{<<"data">>, [{<<"message">>, <<"a message">>}]}, {<<"time_to_live">>,3600}, {<<"collapse_key">>,<<"your_update">>}]),
     ?LOG(info, "Will msg shutdown '~s' for user ~p", [ClientId, WillMsg], State),
     emqttd_broker:foreach_hooks('client.disconnected', [Error, ClientId]),
     %% let it down
