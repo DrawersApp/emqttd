@@ -312,7 +312,7 @@ send_willmsg_online(_ClientId, undefined) ->
   ignore;
 send_willmsg_online(ClientId, WillMsg) ->
   Msg = WillMsg#mqtt_message {
-    payload = list_to_binary("Online")
+    payload = list_to_binary("L")
   },
   emqttd_pubsub:publish(Msg#mqtt_message{from = ClientId}).
 
