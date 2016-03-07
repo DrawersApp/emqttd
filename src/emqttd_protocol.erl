@@ -165,6 +165,8 @@ process(Packet = ?CONNECT_PACKET(Var), State0) ->
             {ReturnCode, false, State1}
     end,
     %% Run hooks
+    ?LOG(info, "Will msg '~s' for user ~p", [ClientId, State1#proto_state.will_msg], State1),
+    send_willmsg_online(ClientId, State1#proto_state.will_msg),
     emqttd_broker:foreach_hooks('client.connected', [ReturnCode1, client(State3)]),
     %% Send connack
     send(?CONNACK_PACKET(ReturnCode1, sp(SessPresent)), State3);
@@ -303,6 +305,15 @@ send_willmsg(_ClientId, undefined) ->
     ignore;
 send_willmsg(ClientId, WillMsg) -> 
     emqttd_pubsub:publish(WillMsg#mqtt_message{from = ClientId}).
+
+send_willmsg_online(_ClientId, undefined) ->
+  ignore;
+send_willmsg_online(ClientId, WillMsg) ->
+  Msg = WillMsg#mqtt_message {
+    payload = list_to_binary("L")
+  },
+  emqttd_pubsub:publish(Msg#mqtt_message{from = ClientId}).
+
 
 start_keepalive(0) -> ignore;
 
