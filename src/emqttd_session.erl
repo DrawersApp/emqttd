@@ -119,7 +119,7 @@
         awaiting_comp :: map(),
 
         %% session expired after 48 hours
-        expired_after = 172800,
+        expired_after = 864000,
 
         expired_timer,
 

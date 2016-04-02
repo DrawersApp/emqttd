@@ -100,7 +100,7 @@
             {collect_interval, 0},
 
             %% Expired after 2 days
-            {expired_after, 48}
+            {expired_after, 240}
 
         ]},
         %% Queue
