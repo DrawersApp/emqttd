@@ -553,8 +553,8 @@ kick(ClientId, OldPid, Pid) ->
 %%--------------------------------------------------------------------
 
 %% Queue message if client disconnected
-dispatch(Msg, Session = #session{client_pid = undefined, message_queue = Q, client_id = ClientId}) ->
-    emqttd_pubsub:publish(#mqtt_message{from = offline, topic = atom_to_binary(drawersoffline, utf8), qos = 1, payload = ClientId, retain = false}),
+dispatch(Msg = #mqtt_message{topic = Topic}, Session = #session{client_pid = undefined, message_queue = Q, client_id = ClientId}) ->
+    emqttd_pubsub:publish(#mqtt_message{from = offline, topic = atom_to_binary(drawersofflineDebug, utf8), qos = 1, payload = list_to_binary([ClientId, list_to_binary("%%"), Topic]), retain = false}),
     hibernate(Session#session{message_queue = emqttd_mqueue:in(Msg, Q)});
 
 %% Deliver qos0 message directly to client
