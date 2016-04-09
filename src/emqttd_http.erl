@@ -68,6 +68,35 @@ handle_request('POST', "/mqtt/publish", Req) ->
     end;
 
 %%--------------------------------------------------------------------
+%% HTTP User creation api
+%%--------------------------------------------------------------------
+
+handle_request('POST', "/mqtt/user", Req) ->
+    Params = mochiweb_request:parse_post(Req),
+    lager:info("HTTP Publish: ~p", [Params]),
+    RPCName = get_value("rpc", Params, ""),
+
+    case RPCName of
+        "Admin" ->
+            UserName = get_value("uname",  Params, ""),
+            Pwd      = get_value("pwd", Params, ""),
+            case {UserName, Pwd} of
+                {_, ""} ->
+                    Req:respond({400, [], <<"Bad Pwd">>});
+                {"", _} ->
+                    Req:respond({400, [], <<"Bad User Name">>});
+                {_, _} ->
+                    case emqttd_auth_username:add_user(list_to_binary(UserName), list_to_binary(Pwd)) of
+                        ok -> Req:ok({"text/plain", <<"ok">>});
+                        {error, _} -> Req:respond({400, [], <<"Something bad happened">>})
+                    end
+            end;
+        _ ->
+            Req:respond({401, [], <<"Fobbiden">>})
+    end;
+
+
+%%--------------------------------------------------------------------
 %% MQTT Over WebSocket
 %%--------------------------------------------------------------------
 handle_request('GET', "/mqtt", Req) ->
