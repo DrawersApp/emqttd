@@ -40,13 +40,23 @@
  {esockd, [
     {logger, {lager, info}}
  ]},
+{emqttd_dashboard, [
+    {default_admin, [
+        {login, "admin"},
+        {password, "public"}
+    ]},
+    {listener, 
+        {emqttd_dashboard, 18083, [
+            {acceptors, 4},
+            {max_clients, 512}]}}
+  ]},
  {emqttd, [
     %% Authentication and Authorization
     {access, [
         %% Authetication. Anonymous Default
         {auth, [
             %% Authentication with username, password
-            %{username, []},
+            {username, []}
             
             %% Authentication with clientid
             %{clientid, [{password, no}, {file, "etc/clients.config"}]},
@@ -64,7 +74,7 @@
             % ]},
 
             %% Allow all
-            {anonymous, []}
+            %{anonymous, []}
         ]},
         %% ACL config
         {acl, [
